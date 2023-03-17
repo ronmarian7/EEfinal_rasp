@@ -58,7 +58,7 @@ def send_sensor_data(client_socket, sensor_data):
    client_socket.close()
 
 
-# create a list to store sensor data # A shared resource
+# create a list to store sensor data, A shared resource
 sensor_data = []
 
 # create a thread to collect sensor data

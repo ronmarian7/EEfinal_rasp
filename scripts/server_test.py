@@ -4,11 +4,16 @@ from time import sleep
 import random
 from datetime import datetime
 
+"""
+TODOs 
+1. change to the actual data from the sensors
+"""
+
 
 def get_sensor_data():
     """
     Getting the data from the sensors
-    Currently the data that is generated is random TODO change to the actual data from the sensors
+    Currently the data that is generated is random
     :return: The data from the sensors in a string containing the format of commas
     """
     area_temperature = random.randint(0, 100)

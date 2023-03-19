@@ -2,6 +2,12 @@ import socket
 import json
 import os
 
+"""
+TODOs
+1. need to add an interface for the gui
+2. need to add an interface for the data processing  
+3. the socket_server and all the other data processing needs to be in different thread 
+"""
 
 area_temperature_d = {}
 area_humidity_d = {}

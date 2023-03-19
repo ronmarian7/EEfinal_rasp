@@ -12,6 +12,10 @@ water_temperature_d = {}
 
 
 def load_data():
+	"""
+	Getting the data history from previous runs if available
+	:return:
+	"""
 	global area_temperature_d, area_humidity_d, dog_weight_d, food_weight_d, water_weight_d, water_temperature_d
 	# if this file exists then we can assume that all the other files exists
 	if os.path.exists("data\\area_temperature.json"):
@@ -30,6 +34,10 @@ def load_data():
 
 
 def dump_data():
+	"""
+	Dumping the data to json files
+	:return:
+	"""
 	with open("data\\area_temperature.json", "w") as f:
 		json.dump(area_temperature_d, f, indent="")
 	with open("data\\area_humidity.json", "w") as f:

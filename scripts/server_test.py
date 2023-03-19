@@ -4,7 +4,7 @@ from time import sleep
 import random
 from datetime import datetime
 
-HOST = '192.168.1.129'  # Standard loopback interface address (localhost)
+HOST = socket.gethostbyname(socket.gethostname())
 PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 
 
@@ -16,14 +16,14 @@ def get_sensor_data():
     water_weight = random.randint(0,100)
     water_temperature = random.randint(0,100)
     time = datetime.now().strftime("%d/%m/%Y - %H:%M:%S")
-    print("Time - {}  area_temperature: {:.1f} C    area_humidity: {}%  dog_weight: {}KG    food_weight: {}gr   water_weight{}ml    water_temperature{}C".format(time, area_temperature, area_humidity, dog_weight, food_weight, water_weight, water_temperature))
+    print("Time - {}  area_temperature: {:.1f} C    area_humidity: {}%  dog_weight: {}KG    food_weight: {}gr   water_weight: {}ml    water_temperature: {}C".format(time, area_temperature, area_humidity, dog_weight, food_weight, water_weight, water_temperature))
     data = f'{time},{area_temperature},{area_humidity},{dog_weight},{food_weight},{water_weight},{water_temperature}'
     return data
 
 
 def socket_server():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        print("Server Started waiting for client to connect ")
+        print(f"Server Started waiting for client to connect in IP: {HOST} ")
         s.bind((HOST, PORT))
         s.listen()
         conn, addr = s.accept()
@@ -39,4 +39,9 @@ def socket_server():
 
 
 if __name__ == '__main__':
-    socket_server()
+    try:
+        socket_server()
+    except ConnectionAbortedError:
+        print("The connection was aborted by the client")
+    except Exception as e:
+        raise e

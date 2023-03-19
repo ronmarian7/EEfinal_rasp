@@ -5,7 +5,7 @@ import json
 import os
 
 
-HOST = '192.168.1.129'  # The server's hostname or IP address
+HOST = '10.100.102.5'  # The server's hostname or IP address
 PORT = 65432        # The port used by the server
 
 area_temperature_d = {}
@@ -23,7 +23,7 @@ def load_data():
 			area_temperature_d = json.load(f)
 		with open("data\\area_humidity.json", "r") as f:
 			area_humidity_d = json.load(f)
-		with open("\\data\\dog_weight.json", "r") as f:
+		with open("data\\dog_weight.json", "r") as f:
 			dog_weight_d = json.load(f)
 		with open("data\\food_weight.json", "r") as f:
 			food_weight_d = json.load(f)
@@ -33,18 +33,18 @@ def load_data():
 			water_temperature_d = json.load(f)
 
 def dump_data():
-	with open("data\\area_temperature.json", "a") as f:
-		json.dump(area_temperature_d, f)
-	with open("data\\area_humidity.json", "a") as f:
-		json.dump(area_humidity_d, f)
-	with open("data\\dog_weight.json", "a") as f:
-		json.dump(dog_weight_d, f)
-	with open("data\\food_weight.json", "a") as f:
-		json.dump(food_weight_d, f)
-	with open("data\\water_weight.json", "a") as f:
-		json.dump(water_weight_d, f)
-	with open("data\\water_temperature.json", "a") as f:
-		json.dump(water_temperature_d, f)
+	with open("data\\area_temperature.json", "w") as f:
+		json.dump(area_temperature_d, f, indent="")
+	with open("data\\area_humidity.json", "w") as f:
+		json.dump(area_humidity_d, f, indent="")
+	with open("data\\dog_weight.json", "w") as f:
+		json.dump(dog_weight_d, f, indent="")
+	with open("data\\food_weight.json", "w") as f:
+		json.dump(food_weight_d, f, indent="")
+	with open("data\\water_weight.json", "w") as f:
+		json.dump(water_weight_d, f, indent="")
+	with open("data\\water_temperature.json", "w") as f:
+		json.dump(water_temperature_d, f, indent="")
 
 
 def client_socket():
@@ -71,7 +71,7 @@ def client_socket():
 			print(f"Dog_weight {dog_weight}")
 			dog_weight_d[time] = dog_weight
 
-			print(f"Food_weight {food_weight_d}")
+			print(f"Food_weight {food_weight}")
 			food_weight_d[time] = food_weight
 
 			print(f"Area_humidity {water_weight}")
@@ -84,6 +84,8 @@ def client_socket():
 if __name__ == "__main__":
 	try:
 		client_socket()
+	except KeyboardInterrupt:
+		print("Session ended by the user")
 	except Exception as e:
 		raise e
 	finally:

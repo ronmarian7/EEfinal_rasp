@@ -45,8 +45,14 @@ def dump_data():
 
 
 def client_socket(HOST, PORT=65432):
+	"""
+	Function for receiving data from the server, and store the data in a dict
+	Before ending the process it dumps the data to a json file
+	:param HOST:
+	:param PORT:
+	"""
 	global area_temperature_d, area_humidity_d, dog_weight_d, food_weight_d, water_weight_d, water_temperature_d
-	load_data()  # load the history of the data if available
+	load_data()  # load the history of the data if available from the existing json files
 
 	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		s.connect((HOST, PORT))

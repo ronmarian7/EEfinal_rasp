@@ -1,12 +1,7 @@
-import struct
-import datetime
 import socket
 import json
 import os
 
-
-HOST = '10.100.102.5'  # The server's hostname or IP address
-PORT = 65432        # The port used by the server
 
 area_temperature_d = {}
 area_humidity_d = {}
@@ -14,6 +9,7 @@ dog_weight_d = {}
 food_weight_d = {}
 water_weight_d = {}
 water_temperature_d = {}
+
 
 def load_data():
 	global area_temperature_d, area_humidity_d, dog_weight_d, food_weight_d, water_weight_d, water_temperature_d
@@ -32,6 +28,7 @@ def load_data():
 		with open("data\\water_temperature.json", "r") as f:
 			water_temperature_d = json.load(f)
 
+
 def dump_data():
 	with open("data\\area_temperature.json", "w") as f:
 		json.dump(area_temperature_d, f, indent="")
@@ -47,9 +44,9 @@ def dump_data():
 		json.dump(water_temperature_d, f, indent="")
 
 
-def client_socket():
+def client_socket(HOST, PORT=65432):
 	global area_temperature_d, area_humidity_d, dog_weight_d, food_weight_d, water_weight_d, water_temperature_d
-	load_data() # load the history of the data if available
+	load_data()  # load the history of the data if available
 
 	with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 		s.connect((HOST, PORT))
@@ -83,7 +80,7 @@ def client_socket():
 
 if __name__ == "__main__":
 	try:
-		client_socket()
+		client_socket("10.100.102.5")
 	except KeyboardInterrupt:
 		print("Session ended by the user")
 	except Exception as e:

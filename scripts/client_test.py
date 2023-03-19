@@ -33,9 +33,9 @@ def load_data():
 		# 	water_temperature = json.load(f)
 
 def dump_data():
-	with open(r"../data/area_temperature.json", "a") as f:
+	with open("data\\area_temperature.json", "a") as f:
 		json.dump(area_temperature, f)
-	with open(r"../data/area_humidity.json", "a") as f:
+	with open("data\\area_humidity.json", "a") as f:
 		json.dump(area_humidity, f)
 	# with open(r"../data/dog_weight.json", "a") as f:
 	# 	json.dump(dog_weight, f)

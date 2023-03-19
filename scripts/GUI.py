@@ -59,16 +59,16 @@ plot_label.pack(pady=10)
 
 
 weight_graph_button = tk.Button(root, text="Weight Graph", command=lambda: print("Weight Graph"), **button_style)
-weight_graph_button.pack(pady=5)
+weight_graph_button.pack(side='left', padx=5, pady=5)
 
 temp_graph_button = tk.Button(root, text="Temperature Graph", command=lambda: print("Temperature Graph"), **button_style)
-temp_graph_button.pack(pady=5)
+temp_graph_button.pack(side='left', padx=5, pady=5)
 
 water_graph_button = tk.Button(root, text="Water Consuming Graph", command=lambda: print("I LOVE TO DRINK"), **button_style)
-water_graph_button.pack(pady=5)
+water_graph_button.pack(side='left', padx=5, pady=5)
 
 food_graph_button = tk.Button(root, text="Food Consuming Graph", command=lambda: print("I LOVE TO EAT"), **button_style)
-food_graph_button.pack(pady=5)
+food_graph_button.pack(side='left', padx=5, pady=5)
 
 # Define the plot window for the graphs
 fig = Figure(figsize=(6, 4), dpi=100)

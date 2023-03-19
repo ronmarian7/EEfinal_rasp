@@ -11,4 +11,3 @@ def feed(portion = 1):
         GPIO.output(13, GPIO.HIGH)
         time.sleep(4) # Wait for 4 seconds
 
-feed(3)

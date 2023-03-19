@@ -21,15 +21,15 @@ def load_data():
 	if os.path.exists("data\\area_temperature.json"):
 		with open("data\\area_temperature.json", "r") as f:
 			area_temperature_d = json.load(f)
-		with open("data\\area_humidity.json", "a") as f:
+		with open("data\\area_humidity.json", "r") as f:
 			area_humidity_d = json.load(f)
-		with open("\\data\\dog_weight.json", "a") as f:
+		with open("\\data\\dog_weight.json", "r") as f:
 			dog_weight_d = json.load(f)
-		with open("data\\food_weight.json", "a") as f:
+		with open("data\\food_weight.json", "r") as f:
 			food_weight_d = json.load(f)
-		with open("data\\water_weight.json", "a") as f:
+		with open("data\\water_weight.json", "r") as f:
 			water_weight_d = json.load(f)
-		with open("data\\water_temperature.json", "a") as f:
+		with open("data\\water_temperature.json", "r") as f:
 			water_temperature_d = json.load(f)
 
 def dump_data():

@@ -9,11 +9,15 @@ PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 
 
 def get_sensor_data():
-    temperature = random.randint(0, 100)
-    humidity = random.randint(0, 100)
+    area_temperature = random.randint(0,100)
+    area_humidity = random.randint(0,100)
+    dog_weight = random.randint(0,100)
+    food_weight = random.randint(0,100)
+    water_weight = random.randint(0,100)
+    water_temperature = random.randint(0,100)
     time = datetime.now().strftime("%d/%m/%Y - %H:%M:%S")
-    print("Time - {}  Temp: {:.1f} C    Humidity: {}% ".format(time, temperature, humidity))
-    data = f'{time},{temperature},{humidity}'
+    print("Time - {}  area_temperature: {:.1f} C    area_humidity: {}%  dog_weight: {}KG    food_weight: {}gr   water_weight{}ml    water_temperature{}C".format(time, area_temperature, area_humidity, dog_weight, food_weight, water_weight, water_temperature))
+    data = f'{time},{area_temperature},{area_humidity},{dog_weight},{food_weight},{water_weight},{water_temperature}'
     return data
 
 

@@ -16,11 +16,12 @@ water_weight = {}
 water_temperature = {}
 
 def load_data():
+	global area_temperature, area_humidity
 	# if this file exists then we can assume that all the other files exists
-	if os.path.exists(r"../data/area_temperature.json"):
-		with open(r"../data/area_temperature.json", "r") as f:
+	if os.path.exists(r"..\\data\\area_temperature.json"):
+		with open(r"..\\data\\area_temperature.json", "r") as f:
 			area_temperature = json.load(f)
-		with open(r"../data/area_humidity.json", "a") as f:
+		with open(r"..\\data\\area_humidity.json", "a") as f:
 			area_humidity = json.load(f)
 		# with open(r"../data/dog_weight.json", "a") as f:
 		# 	dog_weight = json.load(f)

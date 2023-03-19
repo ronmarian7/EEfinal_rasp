@@ -71,10 +71,10 @@ def client_socket(HOST, PORT=65432):
 			print(f"Food_weight {food_weight}")
 			food_weight_d[time] = food_weight
 
-			print(f"Area_humidity {water_weight}")
+			print(f"Water_weight {water_weight}")
 			water_weight_d[time] = water_weight
 
-			print(f"Area_humidity {water_temperature}")
+			print(f"Water_temperature {water_temperature}")
 			water_temperature_d[time] = water_temperature
 
 

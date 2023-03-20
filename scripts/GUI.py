@@ -5,43 +5,57 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import json
 import random
 import datetime
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 
 def get_water_temperature():
-
-# Read data from the JSON file
+    # Read data from the JSON file
     with open("water_temp.json", "r") as infile:
         data = json.load(infile)
 
-# Extract dates and values from the data
-    dates = [item["date"] for item in data]
+    # Extract dates and values from the data
+    dates = [datetime.datetime.strptime(item["date"], "%Y-%m-%d %H:%M:%S") for item in data]
     values = [item["value"] for item in data]
 
-# Create a line plot of the data
-    plt.plot(dates, values)
-    plt.title("Water Temperature")
-    plt.xlabel("Date")
-    plt.ylabel("Temperature (C)")
+    # Create a line plot of the data
+    fig, ax = plt.subplots()
+    ax.plot(dates, values)
+    
+    # Format the x-axis with a date scale
+    ax.xaxis.set_major_locator(mdates.MonthLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+    ax.xaxis.set_minor_locator(mdates.DayLocator())
+    ax.tick_params(axis='x', rotation=45)
+
+    # Set the title and axis labels
+    ax.set_title("Water Temperature")
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Temperature (C)")
+
+    # Show the plot
     plt.show()
 
-
 # Generate 20 measurements for "Water Temperature" metric
+
 data = []
+start_date = datetime.datetime(2023, 2, 1)
+end_date = datetime.datetime(2023, 5, 31)
+
 for i in range(20):
     temperature = round(random.uniform(15, 25), 2)
-    date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    measurement = {"date": date, "value": temperature}
+    date = start_date + datetime.timedelta(days=random.randint(0, (end_date - start_date).days))
+    measurement = {"date": date.strftime("%Y-%m-%d %H:%M:%S"), "value": temperature}
     data.append(measurement)
+
+data = sorted(data, key=lambda x: x['date'])
 
 # Write data to a JSON file
 with open("water_temp.json", "w") as outfile:
     json.dump(data, outfile)
-
-
 # Define the GUI window
 root = tk.Tk()
-root.title("Smart Dog House")
-root.geometry("1200x550")
+root.title("Smart Dog House - GUI")
+root.geometry("700x550")
 root.resizable(False, False)
 root.configure(bg="white")  # Change background color to white
 
@@ -50,7 +64,7 @@ image_path = r"C:\Users\Liron\Desktop\Smart DogHouse\EEfinal_rasp\Picture\del_pi
 image = Image.open(image_path)
 
 # Resize the image to fit the GUI
-image = image.resize((1200, 900), Image.ANTIALIAS)
+image = image.resize((900, 900), Image.ANTIALIAS)
 
 # Convert the image to a Tkinter PhotoImage and set it as the background
 photo = ImageTk.PhotoImage(image)
@@ -88,28 +102,35 @@ dog_weight_button.pack()
 
 
 
+row1 = tk.Frame(root)
+row2 = tk.Frame(root)
+
+# pack the first row of buttons
+weight_graph_button = tk.Button(row1, text="Dog Weight Graph", command=lambda: print("Weight Graph"), **button_style)
+weight_graph_button.pack(side='left', padx=0, pady=0)
+
+temp_graph_button = tk.Button(row1, text="DogHouse Temperature Graph", command=lambda: print("Temperature Graph"), **button_style)
+temp_graph_button.pack(side='left', padx=0, pady=0)
+
+hum_graph_button = tk.Button(row1, text="DogHouse Humidity Graph", command=lambda: print("Humidity Graph"), **button_style)
+hum_graph_button.pack(side='left', padx=0, pady=0)
+
+# pack the second row of buttons
+water_graph_button = tk.Button(row2, text="Water Consuming Graph", command=lambda: print("Water Graph"), **button_style)
+water_graph_button.pack(side='left', padx=0, pady=0.5)
+
+food_graph_button = tk.Button(row2, text="Food Consuming Graph", command=lambda: print("Food Graph"), **button_style)
+food_graph_button.pack(side='left', padx=0, pady=0.5)
+
+temp_graph_button = tk.Button(row2, text="Water Temperature Graph", command=lambda: get_water_temperature(), **button_style)
+temp_graph_button.pack(side='left', padx=0, pady=0.5)
+
+# pack the rows of buttons into the main window
 plot_label = tk.Label(root, text="Graphs",**label_style2)
-plot_label.pack(pady=20)
-plot_label.place(x=460, y=370)
+plot_label.pack(pady=60)
 
-weight_graph_button = tk.Button(root, text="Dog Weight Graph", command=lambda: print("Weight Graph"), **button_style)
-weight_graph_button.pack(side='left', padx=5, pady=0)
-
-temp_graph_button = tk.Button(root, text="DogHouse Temperature Graph", command=lambda: print("Temperature Graph"), **button_style)
-temp_graph_button.pack(side='left', padx=5, pady=0)
-
-
-temp_graph_button = tk.Button(root, text="DogHouse Humidity Graph", command=lambda: print("Temperature Graph"), **button_style)
-temp_graph_button.pack(side='left', padx=5, pady=0)
-
-temp_graph_button = tk.Button(root, text="Water Temperature Graph", command=lambda: get_water_temperature() , **button_style)
-temp_graph_button.pack(side='left', padx=5, pady=0)
-
-water_graph_button = tk.Button(root, text="Water Consuming Graph", command=lambda: print("I LOVE TO DRINK"), **button_style)
-water_graph_button.pack(side='left', padx=5, pady=0)
-
-food_graph_button = tk.Button(root, text="Food Consuming Graph", command=lambda: print("I LOVE TO EAT"), **button_style)
-food_graph_button.pack(side='left', padx=5, pady=0)
+row1.pack()
+row2.pack()
 
 # Define the plot window for the graphs
 fig = Figure(figsize=(6, 4), dpi=100)

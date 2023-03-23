@@ -3,12 +3,20 @@ from PIL import Image, ImageTk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import json
+import sys
 import random
 import datetime
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 
-def get_water_temperature():
+class StdoutRedirector(object):
+    def __init__(self, text_widget):
+        self.text_space = text_widget
+
+    def write(self, message):
+        self.text_space.insert(tk.END, message)
+
+def get_water_temperature(): # for water temeperature graph
     # Read data from the JSON file
     with open("water_temp.json", "r") as infile:
         data = json.load(infile)
@@ -49,9 +57,11 @@ for i in range(20):
 
 data = sorted(data, key=lambda x: x['date'])
 
+
 # Write data to a JSON file
 with open("water_temp.json", "w") as outfile:
     json.dump(data, outfile)
+    
 # Define the GUI window
 root = tk.Tk()
 root.title("Smart Dog House - GUI")
@@ -59,9 +69,19 @@ root.geometry("700x550")
 root.resizable(False, False)
 root.configure(bg="white")  # Change background color to white
 
+root2 = tk.Tk() #For outputs
+root2.title("GUI outputs")
+root2.geometry("400x200")
+
+text_widget = tk.Text(root2)
+text_widget.pack() 
+sys.stdout = StdoutRedirector(text_widget) # Redirect output to widget instead of terminal
+
 # Load the image
 image_path = r"C:\Users\Liron\Desktop\Smart DogHouse\EEfinal_rasp\Picture\del_pic.jpg"
 image = Image.open(image_path)
+
+
 
 # Resize the image to fit the GUI
 image = image.resize((900, 900), Image.ANTIALIAS)

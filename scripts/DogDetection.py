@@ -1,6 +1,4 @@
 import cv2
-# from DogBreedDetection import predict_breed
-# from DogPoseDetection import predict_pose
 from DogDetecrionClass import ObjectDetection
 
 

@@ -310,32 +310,32 @@ class DogHouseApp:
 
         temp_label = tk.Label(stat_frame, text="DogHouse\nTemperature", **label_style, pady=50)
         temp_label.grid(row=0, column=0, sticky=tk.W + tk.E)
-        self.temp_status = tk.Label(stat_frame, text=f"{self.dog_house_temp}", **button_style, pady=10)
+        self.temp_status = tk.Label(stat_frame, text=f"{self.dog_house_temp}°C", **button_style, pady=10)
         self.temp_status.grid(row=1, column=0, sticky=tk.W + tk.E)
 
         humid_label = tk.Label(stat_frame, text="DogHouse\nHumidity", **label_style, pady=50)
         humid_label.grid(row=2, column=0, sticky=tk.W + tk.E)
-        self.humid_status = tk.Label(stat_frame, text=f"{self.dog_house_humidity}", **button_style, pady=10)
+        self.humid_status = tk.Label(stat_frame, text=f"{self.dog_house_humidity}%", **button_style, pady=10)
         self.humid_status.grid(row=3, column=0, sticky=tk.W + tk.E)
 
         water_temp_label = tk.Label(stat_frame, text="Water\nTemperature", **label_style, pady=50)
         water_temp_label.grid(row=0, column=1, sticky=tk.W + tk.E)
-        self.water_temp_status = tk.Label(stat_frame, text=f"{self.water_temp}", **button_style, pady=10)
+        self.water_temp_status = tk.Label(stat_frame, text=f"{self.water_temp}°C", **button_style, pady=10)
         self.water_temp_status.grid(row=1, column=1, sticky=tk.W + tk.E)
 
         food_weight_label = tk.Label(stat_frame, text="Food\nTank`s Weight", **label_style, pady=50)
         food_weight_label.grid(row=0, column=2, sticky=tk.W + tk.E)
-        self.food_weight_status = tk.Label(stat_frame, text=f"{self.food_weight}", **button_style, pady=10)
+        self.food_weight_status = tk.Label(stat_frame, text=f"{self.food_weight}KG", **button_style, pady=10)
         self.food_weight_status.grid(row=1, column=2, sticky=tk.W + tk.E)
 
         water_weight_label = tk.Label(stat_frame, text="Water\nTank`s Weight", **label_style, pady=50)
         water_weight_label.grid(row=2, column=2, sticky=tk.W + tk.E)
-        self.water_weight_status = tk.Label(stat_frame, text=f"{self.water_weight}", **button_style, pady=10)
+        self.water_weight_status = tk.Label(stat_frame, text=f"{self.water_weight}KG", **button_style, pady=10)
         self.water_weight_status.grid(row=3, column=2, sticky=tk.W + tk.E)
 
         dog_weight_label = tk.Label(stat_frame, text="Dog\nWeight", **label_style, pady=50)
         dog_weight_label.grid(row=2, column=1, sticky=tk.W + tk.E)
-        self.dog_weight_status = tk.Label(stat_frame, text=f"{self.dog_weight}", **button_style, pady=10)
+        self.dog_weight_status = tk.Label(stat_frame, text=f"{self.dog_weight}KG", **button_style, pady=10)
         self.dog_weight_status.grid(row=3, column=1, sticky=tk.W + tk.E)
 
         stat_frame.pack(fill='x')

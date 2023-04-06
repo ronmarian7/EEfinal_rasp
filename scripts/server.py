@@ -22,7 +22,7 @@ def get_sensor_data():
     food_weight = random.randint(0, 100)
     water_weight = random.randint(0, 100)
     water_temperature = random.randint(0, 100)
-    time = datetime.now().strftime("%d/%m/%Y - %H:%M:%S")
+    time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     print("Time - {}  area_temperature: {:.1f} C    area_humidity: {}%  dog_weight: {}KG    food_weight: {}gr\
        water_weight: {}ml    water_temperature: {}C".format(time, area_temperature, area_humidity, dog_weight,
                                                             food_weight, water_weight, water_temperature))
@@ -30,7 +30,7 @@ def get_sensor_data():
     return data
 
 
-def socket_server(HOST, PORT=65432, x=1):
+def socket_server(HOST, PORT=65432, x=5):
     """
     Setting the server socket and waiting for a client to connect
     After connecting, sends the data every x seconds

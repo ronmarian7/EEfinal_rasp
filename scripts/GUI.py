@@ -9,6 +9,9 @@ import datetime
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import threading
+from client import ClientSocket
+from collections import OrderedDict
+import queue
 
 """
 # TODO
@@ -23,6 +26,7 @@ import threading
 * Need to be sync about the names of the files and variables  
 """
 
+
 class StdoutRedirector(object):
     def __init__(self, text_widget):
         self.text_space = text_widget
@@ -35,77 +39,93 @@ class StdoutRedirector(object):
 
 
 class DogHouseApp:
-    def __init__(self, lock: threading.Lock):
-        self.lock = lock  # TODO
+    def __init__(self, client_socket: ClientSocket):
+        self.client_socket = client_socket
         self.root = tk.Tk()
         self.root2 = tk.Tk()  # For outputs
-        self.dog_house_temp = round(random.uniform(10, 30), 2)
-        self.dog_house_humidity = round(random.uniform(20, 80), 2)
-        self.water_temp = round(random.uniform(5, 15), 2)
-        self.food_weight = round(random.uniform(0, 20), 2)
-        self.dog_weight = round(random.uniform(5, 50), 2)
-        self.water_weight = round(random.uniform(0, 20), 2)
 
+        self.dog_house_temp_d = {}
+        self.dog_house_humidity_d = {}
+        self.water_temp_d = {}
+        self.food_weight_d = {}
+        self.dog_weight_d = {}
+        self.water_weight_d = {}
+
+        self.time = None
+        self.dog_house_temp = 0
+        self.dog_house_humidity = 0
+        self.water_temp = 0
+        self.food_weight = 0
+        self.dog_weight = 0
+        self.water_weight = 0
+
+        self.dog_weight_label = None
+        self.generate_random_data()  # FIXME after changing the plot to get the data from the dicts and not the files
+        self.dump_data()  # FIXME after changing the plot to get the data from the dicts and not the files
         self.create_gui()
 
+
+
     def plot_food_consuming(self):
-        with open("../data/dog_water_consumption.json", "r") as f:
-            data = json.load(f)
+        # with open("../data/dog_water_consumption.json", "r") as f:
+        #     data = json.load(f)
 
         # Create a list of x and y values for the plot
-        x_values = list(data.keys())
-        y_values = list(data.values())
+        x_values = list(self.food_weight_d.keys())
+        y_values = list(self.food_weight_d.values())
 
         # Plot the data as a line graph
         plt.figure()
-        plt.plot(x_values, y_values)
+        plt.plot(x_values[:-7], y_values[:-7])
         plt.xlabel("Day of the week")
         plt.ylabel("Water consumption (liters)")
         plt.title("Dog water consumption over time")
         plt.show()
 
     def plot_water_consuming(self):
-        with open("../data/dog_food_consumption.json", "r") as f:
-            data = json.load(f)
+        # with open("../data/dog_food_consumption.json", "r") as f:
+        #     data = json.load(f)
 
         # Create a list of x and y values for the plot
-        x_values = list(data.keys())
-        y_values = list(data.values())
+        # FIXME change the plot only to the wanted amount of points
+        x_values = list(self.water_weight_d.keys())
+        y_values = list(self.water_weight_d.values())
 
         # Plot the data as a line graph
         plt.figure()
-        plt.plot(x_values, y_values)
+        plt.plot(x_values[:-7], y_values[:-7])
         plt.xlabel("Day of the week")
         plt.ylabel("Food consumption (kilograms)")
         plt.title("Dog food consumption over time")
         plt.show()
 
     def plot_humidity(self):
-        with open("../data/dog_humidity.json", "r") as f:
-            data = json.load(f)
+        # with open("../data/dog_humidity.json", "r") as f:
+        #     data = json.load(f)
 
         # Create a list of x and y values for the plot
-        x_values = list(data.keys())
-        y_values = list(data.values())
+        x_values = list(self.dog_house_humidity_d.keys())
+        y_values = list(self.dog_house_humidity_d.values())
 
         # Plot the data as a line graph
         plt.figure()
-        plt.plot(x_values, y_values)
+        plt.plot(x_values[:-7], y_values[:-7])
         plt.xlabel("Day of the week")
         plt.ylabel("Dog House Humidity")
         plt.title("DogHouse Humidity Over Time")
         plt.show()
 
     def plot_dog_weight(self):  # for dog weight graph
-        with open("../data/dog_weights.json", "r") as f:
-            data = json.load(f)
+        # with open("../data/dog_weights.json", "r") as f:
+        #     data = json.load(f)
+
         # Create a list of x and y values for the plot
-        x_values = list(data.keys())
-        y_values = list(data.values())
+        x_values = list(self.dog_weight_d.keys())
+        y_values = list(self.dog_weight_d.values())
 
         # Plot the data as a line graph
         plt.figure()
-        plt.plot(x_values, y_values)
+        plt.plot(x_values[:-7], y_values[:-7])
         plt.xlabel("Day")
         plt.ylabel("Dog Weight")
         plt.title("Dog Weight Over Time")
@@ -121,7 +141,7 @@ class DogHouseApp:
 
         # Plot the data as a line graph
         plt.figure()
-        plt.plot(x_values, y_values)
+        plt.plot(x_values[:-7], y_values[:-7])
         plt.xlabel("Day of the week")
         plt.ylabel("Dog house temperature")
         plt.title("DogHouse Temperature Over Time")
@@ -164,69 +184,112 @@ class DogHouseApp:
 
     def dog_house_temp_gen(self):
         print(f"Currently DogHouse Temperature: {self.dog_house_temp}°C, Humidity: {self.dog_house_humidity}%")
-        self.generate_values()
+        # self.generate_values()
 
     def water_temp_gen(self):
         print(f"Water Temperature: {self.water_temp}°C")
-        self.generate_values()
+        # self.generate_values()
 
     def food_weight_gen(self):
         print(f"Food Tank Weight: {self.food_weight}Kg, Water Tank Weight: {self.water_weight}L")
-        self.generate_values()
+        # self.generate_values()
 
     def dog_weight_gen(self):
         print(f"Dog Weight: {self.dog_weight}Kg")
-        self.generate_values()
+        # self.generate_values()
 
     def generate_random_data(self):
         # Generate 20 measurements for "Water Temperature" Graph
-        data = []
+        data = {}
         start_date = datetime.datetime(2023, 2, 1)
         end_date = datetime.datetime(2023, 5, 31)
         for i in range(20):
             temperature = round(random.uniform(15, 25), 2)
             date = start_date + datetime.timedelta(days=random.randint(0, (end_date - start_date).days))
-            measurement = {"date": date.strftime("%Y-%m-%d %H:%M:%S"), "value": temperature}
-            data.append(measurement)
-        data = sorted(data, key=lambda x: x['date'])
-        # Generate data for "Dog Weight" Graph
-        weights = {}
+            measurement = {date.strftime("%d/%m/%Y %H:%M:%S"): temperature}
+            data.update(measurement)
+        sorted_data = {k: v for k, v in sorted(data.items(), key=lambda item: datetime.datetime.strptime(item[0], "%d/%m/%Y %H:%M:%S"))}
+        self.water_temp_d = sorted_data
+
+        # FIXME dates same as Water Temperature
         days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
         for day in days:
-            weights[day] = round(random.uniform(30, 35), 2)
-        # Generate data for "Doghouse Temperature"
-        temperatures = {}
-        for day in days:
-            temperatures[day] = round(random.uniform(5, 35), 2)
-        # Generate dog house humidity data
-        humidity = {}
-        for day in days:
-            humidity[day] = round(random.uniform(20, 80), 2)
-        # Generate dog food consumption data
-        food_consumption = {}
-        for day in days:
-            food_consumption[day] = round(random.uniform(0.5, 2.5), 2)
-        # Generate dog water consumption data
-        water_consumption = {}
-        for day in days:
-            water_consumption[day] = round(random.uniform(0.5, 2.5), 2)
+            # Generate data for "Dog Weight" Graph
+            self.dog_weight_d[day] = round(random.uniform(30, 35), 2)
+            # Generate data for "Doghouse Temperature"
+            self.dog_house_temp_d[day] = round(random.uniform(5, 35), 2)
+            # Generate dog house humidity data
+            self.dog_house_humidity_d[day] = round(random.uniform(20, 80), 2)
+            # Generate dog food consumption data
+            self.food_weight_d[day] = round(random.uniform(0.5, 2.5), 2)
+            # Generate dog water consumption data
+            self.water_weight_d[day] = round(random.uniform(0.5, 2.5), 2)
+
+    def dump_data(self):
         # Write data to a JSON file
-        with open("../data/water_temp.json", "w") as outfile:
-            json.dump(data, outfile)
+        with open("../data/water_temp.json", "w") as f:
+            json.dump(self.water_temp_d, f)
         with open("../data/dog_weights.json", "w") as f:
-            json.dump(weights, f)
+            json.dump(self.dog_weight_d, f)
         with open("../data/dog_temperatures.json", "w") as f:
-            json.dump(temperatures, f)
+            json.dump(self.dog_house_temp_d, f)
         with open("../data/dog_humidity.json", "w") as f:
-            json.dump(humidity, f)
+            json.dump(self.dog_house_humidity_d, f)
         with open("../data/dog_water_consumption.json", "w") as f:
-            json.dump(water_consumption, f)
+            json.dump(self.water_weight_d, f)
         with open("../data/dog_food_consumption.json", "w") as f:
-            json.dump(food_consumption, f)
+            json.dump(self.food_weight_d, f)
+
+    def load_data(self):
+        # load data to a JSON file
+        with open("../data/water_temp.json", "r") as f:
+            data = json.load(f)
+
+        # FIXME need to do this to all the files after changing from day to dates
+        for key in data:
+            datetime_key = datetime.strptime(key, "%Y-%m-%d %H:%M:%S")
+            self.water_temp_d[datetime_key] = data[key]
+
+        with open("../data/dog_weights.json", "r") as f:
+            self.dog_weight_d = json.load(f)
+
+        with open("../data/dog_temperatures.json", "r") as f:
+            self.water_temp_d = json.load(f)
+
+        with open("../data/dog_humidity.json", "r") as f:
+            self.dog_house_humidity_d = json.load(f)
+
+        with open("../data/dog_water_consumption.json", "r") as f:
+            self.water_weight_d = json.load(f)
+
+        with open("../data/dog_food_consumption.json", "r") as f:
+            self.food_weight_d = json.load(f)
+
+    def update_data(self):
+        try:
+            data = self.client_socket.data_queue.get_nowait()
+        except queue.Empty:
+            pass
+        else:
+            splinted_data = data.split(',')
+            self.time = splinted_data[0]
+            # self.status_label.config(text=f"Data is right for:{self.time}")
+            data = [int(i) for i in splinted_data[1:]]
+            self.dog_house_temp, self.dog_house_humidity, self.dog_weight, \
+                self.food_weight, self.water_weight, self.water_temp = data
+
+            self.dog_weight_label.config(text=f"Dog Weight: {self.dog_weight}")
+
+            self.dog_house_temp_d[self.time] = self.dog_house_temp
+            self.dog_house_humidity_d[self.time] = self.dog_house_humidity
+            self.water_temp_d[self.time] = self.water_temp
+            self.food_weight_d[self.time] = self.food_weight
+            self.dog_weight_d[self.time] = self.dog_weight
+            self.water_weight_d[self.time] = self.water_weight
+
+        self.root.after(1000, self.update_data)  # Update data every 1000 ms (1 second)
 
     def create_gui(self):
-        self.generate_values()
-        self.generate_random_data()
 
         # Define the GUI window
         self.root.title("Smart Dog House - GUI")
@@ -259,6 +322,7 @@ class DogHouseApp:
         button_style = {"font": ("Arial", 12), "fg": "white", "bg": "#0074D9"}  # Change button color to blue
         label_style2 = {"font": ("Arial", 16, "bold"), "fg": "black"}
         # Define the labels and buttons
+
         temp_humid_label = tk.Label(self.root, text="DogHouse Temperature & Humidity", **label_style)
         temp_humid_label.pack(pady=10)
         temp_humid_button = tk.Button(self.root, text="Check", command=self.dog_house_temp_gen, **button_style)
@@ -274,12 +338,10 @@ class DogHouseApp:
         food_weight_button = tk.Button(self.root, text="Check", command=self.food_weight_gen, **button_style)
         food_weight_button.pack()
 
-        dog_weight_label = tk.Label(self.root, text="Dog Weight", **label_style)
-        dog_weight_label.pack(pady=10)
+        self.dog_weight_label = tk.Label(self.root, text="Dog Weight", **label_style)
+        self.dog_weight_label.pack(pady=10)
         dog_weight_button = tk.Button(self.root, text="Check", command=self.dog_weight_gen, **button_style)
         dog_weight_button.pack()
-
-        generate_button = tk.Button(self.root, text="Generate Values", command=self.generate_values)
 
         row1 = tk.Frame(self.root)
         row2 = tk.Frame(self.root)
@@ -324,8 +386,17 @@ class DogHouseApp:
         plot_window = FigureCanvasTkAgg(fig, self.root)
         plot_window.get_tk_widget().pack(padx=20, pady=10, side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
+    def run(self):
+        self.root.after(100, self.update_data)
+        self.root.mainloop()
+
 
 if __name__ == "__main__":
-    lock = threading.Lock()
-    app = DogHouseApp(lock)
-    app.root.mainloop()
+    client = ClientSocket("10.100.102.5")
+    app = DogHouseApp(client)
+    try:
+        app.run()
+    finally:
+        app.dump_data()
+        app.client_socket.dump_data()
+        print("Closing")

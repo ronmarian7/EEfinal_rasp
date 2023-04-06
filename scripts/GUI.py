@@ -186,12 +186,20 @@ class DogHouseApp:
         print(f"Currently DogHouse Temperature: {self.dog_house_temp}°C, Humidity: {self.dog_house_humidity}%")
         # self.generate_values()
 
+    def dog_house_hum_gen(self):
+        print(f"Humidity: {self.dog_house_humidity}%")
+        # self.generate_values()
+
     def water_temp_gen(self):
         print(f"Water Temperature: {self.water_temp}°C")
         # self.generate_values()
 
     def food_weight_gen(self):
-        print(f"Food Tank Weight: {self.food_weight}Kg, Water Tank Weight: {self.water_weight}L")
+        print(f"Food Tank Weight: {self.food_weight}Kg")
+        # self.generate_values()
+
+    def water_weight_gen(self):
+        print(f"Water Tank Weight: {self.water_weight}L")
         # self.generate_values()
 
     def dog_weight_gen(self):
@@ -278,7 +286,7 @@ class DogHouseApp:
             self.dog_house_temp, self.dog_house_humidity, self.dog_weight, \
                 self.food_weight, self.water_weight, self.water_temp = data
 
-            self.dog_weight_label.config(text=f"Dog Weight: {self.dog_weight}")
+            # self.dog_weight_label.config(text=f"Dog Weight: {self.dog_weight}")
 
             self.dog_house_temp_d[self.time] = self.dog_house_temp
             self.dog_house_humidity_d[self.time] = self.dog_house_humidity
@@ -294,7 +302,7 @@ class DogHouseApp:
         # Define the GUI window
         self.root.title("Smart Dog House - GUI")
         self.root.geometry("700x550")
-        self.root.resizable(False, False)
+        # self.root.resizable(False, False)
         self.root.configure(bg="white")  # Change background color to white
 
         self.root2.title("GUI outputs")
@@ -320,71 +328,90 @@ class DogHouseApp:
         label_style = {"font": ("Arial", 16, "bold"), "fg": "black",
                        "bg": "white"}  # Change label color to black and background color to white
         button_style = {"font": ("Arial", 12), "fg": "white", "bg": "#0074D9"}  # Change button color to blue
+        button_style2 = {"font": ("Arial", 13), "fg": "white", "bg": "#0074D9"}  # Change button color to blue
         label_style2 = {"font": ("Arial", 16, "bold"), "fg": "black"}
         # Define the labels and buttons
 
-        temp_humid_label = tk.Label(self.root, text="DogHouse Temperature & Humidity", **label_style)
-        temp_humid_label.pack(pady=10)
-        temp_humid_button = tk.Button(self.root, text="Check", command=self.dog_house_temp_gen, **button_style)
-        temp_humid_button.pack()
+        stat_frame = tk.Frame(self.root)
+        stat_frame.columnconfigure(0, weight=1)
+        stat_frame.columnconfigure(1, weight=1)
+        stat_frame.columnconfigure(2, weight=1)
 
-        water_temp_label = tk.Label(self.root, text="Water Temperature", **label_style)
-        water_temp_label.pack(pady=10)
-        water_temp_button = tk.Button(self.root, text="Check", command=self.water_temp_gen, **button_style)
-        water_temp_button.pack()
+        temp_label = tk.Label(stat_frame, text="DogHouse\nTemperature", **label_style, pady=50)
+        temp_label.grid(row=0, column=0, sticky=tk.W+tk.E)
+        temp_button = tk.Button(stat_frame, text="Check", command=self.dog_house_temp_gen, **button_style, pady=10)
+        temp_button.grid(row=1, column=0, sticky=tk.W+tk.E)
 
-        food_weight_label = tk.Label(self.root, text="Food & Water Tank`s Weight", **label_style)
-        food_weight_label.pack(pady=10)
-        food_weight_button = tk.Button(self.root, text="Check", command=self.food_weight_gen, **button_style)
-        food_weight_button.pack()
+        humid_label = tk.Label(stat_frame, text="DogHouse\nHumidity", **label_style, pady=50)
+        humid_label.grid(row=2, column=0, sticky=tk.W+tk.E)
+        humid_button = tk.Button(stat_frame, text="Check", command=self.dog_house_hum_gen, **button_style, pady=10)
+        humid_button.grid(row=3, column=0, sticky=tk.W+tk.E)
 
-        self.dog_weight_label = tk.Label(self.root, text="Dog Weight", **label_style)
-        self.dog_weight_label.pack(pady=10)
-        dog_weight_button = tk.Button(self.root, text="Check", command=self.dog_weight_gen, **button_style)
-        dog_weight_button.pack()
+        water_temp_label = tk.Label(stat_frame, text="Water\nTemperature", **label_style, pady=50)
+        water_temp_label.grid(row=0, column=1, sticky=tk.W+tk.E)
+        water_temp_button = tk.Button(stat_frame, text="Check", command=self.water_temp_gen, **button_style, pady=10)
+        water_temp_button.grid(row=1, column=1, sticky=tk.W+tk.E)
 
-        row1 = tk.Frame(self.root)
-        row2 = tk.Frame(self.root)
+        food_weight_label = tk.Label(stat_frame, text="Food\nTank`s Weight", **label_style, pady=50)
+        food_weight_label.grid(row=0, column=2, sticky=tk.W+tk.E)
+        food_weight_button = tk.Button(stat_frame, text="Check", command=self.food_weight_gen, **button_style, pady=10)
+        food_weight_button.grid(row=1, column=2, sticky=tk.W+tk.E)
+
+        water_weight_label = tk.Label(stat_frame, text="Water\nTank`s Weight", **label_style, pady=50)
+        water_weight_label.grid(row=2, column=2, sticky=tk.W + tk.E)
+        water_weight_button = tk.Button(stat_frame, text="Check", command=self.water_weight_gen, **button_style, pady=10)
+        water_weight_button.grid(row=3, column=2, sticky=tk.W + tk.E)
+
+        self.dog_weight_label = tk.Label(stat_frame, text="Dog\nWeight", **label_style, pady=50)
+        self.dog_weight_label.grid(row=2, column=1, sticky=tk.W + tk.E)
+        dog_weight_button = tk.Button(stat_frame, text="Check", command=self.dog_weight_gen, **button_style, pady=10)
+        dog_weight_button.grid(row=3, column=1, sticky=tk.W + tk.E)
+
+        stat_frame.pack(fill='x')
+
+        plot_label = tk.Label(self.root, text="Graphs", **label_style2)
+        plot_label.pack(pady=10)
+
+
+        graph_frame = tk.Frame(self.root)
+        graph_frame.columnconfigure(0, weight=2)
+        graph_frame.columnconfigure(1, weight=2)
+        graph_frame.columnconfigure(2, weight=2)
 
         # pack the first row of buttons
-        weight_graph_button = tk.Button(row1, text="Dog Weight Graph", command=lambda: self.plot_dog_weight(),
-                                        **button_style)
-        weight_graph_button.pack(side='left', padx=0, pady=0)
+        weight_graph_button = tk.Button(graph_frame, text="Dog Weight Graph", command=lambda: self.plot_dog_weight(),
+                                        **button_style2, pady=10)
+        weight_graph_button.grid(row=0, column=0, sticky=tk.W+tk.E)
 
-        temp_graph_button = tk.Button(row1, text="DogHouse Temperature Graph",
+        temp_graph_button = tk.Button(graph_frame, text="DogHouse Temperature Graph",
                                       command=lambda: self.plot_doghouse_temperature(),
-                                      **button_style)
-        temp_graph_button.pack(side='left', padx=0, pady=0)
+                                      **button_style2, pady=10)
+        temp_graph_button.grid(row=0, column=1, sticky=tk.W+tk.E)
 
-        hum_graph_button = tk.Button(row1, text="DogHouse Humidity Graph", command=lambda: self.plot_humidity(),
-                                     **button_style)
-        hum_graph_button.pack(side='left', padx=0, pady=0)
+        hum_graph_button = tk.Button(graph_frame, text="DogHouse Humidity Graph", command=lambda: self.plot_humidity(),
+                                     **button_style2, pady=10)
+        hum_graph_button.grid(row=0, column=2, sticky=tk.W+tk.E)
 
         # pack the second row of buttons
-        water_graph_button = tk.Button(row2, text="Water Consuming Graph", command=lambda: self.plot_water_consuming(),
-                                       **button_style)
-        water_graph_button.pack(side='left', padx=0, pady=0.5)
+        water_graph_button = tk.Button(graph_frame, text="Water Consuming Graph", command=lambda: self.plot_water_consuming(),
+                                       **button_style2, pady=10)
+        water_graph_button.grid(row=1, column=0, sticky=tk.W+tk.E)
 
-        food_graph_button = tk.Button(row2, text="Food Consuming Graph", command=lambda: self.plot_food_consuming(),
-                                      **button_style)
-        food_graph_button.pack(side='left', padx=0, pady=0.5)
+        food_graph_button = tk.Button(graph_frame, text="Food Consuming Graph", command=lambda: self.plot_food_consuming(),
+                                      **button_style2, pady=10)
+        food_graph_button.grid(row=1, column=1, sticky=tk.W+tk.E)
 
-        temp_graph_button = tk.Button(row2, text="Water Temperature Graph",
+        temp_graph_button = tk.Button(graph_frame, text="Water Temperature Graph",
                                       command=lambda: self.plot_water_temperature(),
-                                      **button_style)
-        temp_graph_button.pack(side='left', padx=0, pady=0.5)
+                                      **button_style2, pady=10)
+        temp_graph_button.grid(row=1, column=2, sticky=tk.W+tk.E)
 
-        # pack the rows of buttons into the main window
-        plot_label = tk.Label(self.root, text="Graphs", **label_style2)
-        plot_label.pack(pady=60)
+        graph_frame.pack(fill='x')
 
-        row1.pack()
-        row2.pack()
-
-        # Define the plot window for the graphs
-        fig = Figure(figsize=(6, 4), dpi=100)
-        plot_window = FigureCanvasTkAgg(fig, self.root)
-        plot_window.get_tk_widget().pack(padx=20, pady=10, side=tk.BOTTOM, fill=tk.BOTH, expand=1)
+        # # Define the plot window for the graphs
+        # fig = Figure(figsize=(6, 4), dpi=100)
+        # plot_window = FigureCanvasTkAgg(fig, self.root)
+        # plot_window.get_tk_widget().pack(padx=20, pady=10, side=tk.BOTTOM, fill=tk.BOTH, expand=1)
 
     def run(self):
         self.root.after(100, self.update_data)

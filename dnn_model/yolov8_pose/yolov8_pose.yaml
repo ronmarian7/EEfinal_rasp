@@ -1,0 +1,13 @@
+path:   "/home/ira-demo/EEfinal_rasp/datasets/dog-pose-yolo_dataset"
+train:  "train"
+test:   "train" 
+# val:  "valid/images"
+
+#Classes
+nc: 3
+
+#classes names
+names: 
+  0: Lying
+  1: Sitting
+  2: Standing

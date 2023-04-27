@@ -1,0 +1,3 @@
+0.96 Standing
+0.04 Sitting
+0.00 Lying

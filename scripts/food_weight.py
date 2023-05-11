@@ -51,21 +51,23 @@ def handle_feeder(dtpin1 = 19, sckpin1 = 26, dtpin2 = 23, sckpin2 = 24, sleeptim
     hx1.reset()
     hx2.reset()
     hx1.tare()
-    hx2.tare()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+    hx2.tare() 
+    sampling_count=0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
     while True:
         try:
             food_weight1 = max(0,(hx1.get_weight(dtpin1))/470)
             food_weight2 = max(0,(hx2.get_weight(dtpin2))/470)
-            
+            sampling_count+=1
             total_food_weight=int(food_weight1+food_weight2)
             print(f"Food's weight is: {total_food_weight} gr.")
-            if (total_food_weight)<feedingthreshold:
-                seconds = portions*feedersleeptime
-                print(f"Feeding dog, will take {seconds} seconds")
-                timer_thread = threading.Thread(target=countdown, args=(seconds,))
-                timer_thread.start()
-                feeder.feed(portions)
-                timer_thread.join()
+            if(sampling_count>5):
+              if (total_food_weight)<feedingthreshold:
+                 seconds = portions*feedersleeptime
+                 print(f"Feeding dog, will take {seconds} seconds")
+                 timer_thread = threading.Thread(target=countdown, args=(seconds,))
+                 timer_thread.start()
+                 feeder.feed(portions)
+                 timer_thread.join()
 
             hx1.power_down()
             hx1.power_up()

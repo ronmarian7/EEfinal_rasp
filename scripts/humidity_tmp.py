@@ -17,7 +17,7 @@ def get_humidity_tmp(pin = 17, sleeptime = 2.0):
     while True:
         try:
             # Print the values to the serial port
-            temperature_c = dhtDevice.temperature
+            temperature_c = (dhtDevice.temperature)/-1.2
             temperature_f = temperature_c * (9 / 5) + 32
             humidity = dhtDevice.humidity
             print("Temp: {:.1f} F / {:.1f} C    Humidity: {}% ".format(temperature_f, temperature_c, humidity))

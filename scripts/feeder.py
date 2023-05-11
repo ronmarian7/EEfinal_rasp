@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 
-# GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BCM)
 
 # receives two variables, portion (default 1), and pin (default 13) - represents the GPIO pin number
 def feed(portion = 1, pin = 13, sleeptime = 4):

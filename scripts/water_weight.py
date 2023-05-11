@@ -40,19 +40,18 @@ def get_water_weight(dtpin = 5, sckpin=6, sleeptime = 0.5, cautionthreshold = 10
 
     print("Checking water's weight...")
 
-
+    sampling_count=0
     while True:
         try:
         
             water_weight = max(0, int((hx.get_weight(dtpin))/(-470))) 
+            sampling_count+=1
             print(f"Water's weight is: {(water_weight)} ml.")
-            if (water_weight < cautionthreshold):
-
-                text = pyfiglet.figlet_format("CAUTION:\nWater needs a refill!", font="big")
-                print("\033[1;31m" + text + "\033[0m")
-
-                #print("\033[91m" + "CAUTION: Water needs a refill!" + "\033[0m")
-
+            if(sampling_count>10):
+                if (water_weight < cautionthreshold):
+                    text = pyfiglet.figlet_format("CAUTION:\nWater needs a refill!", font="big")
+                    print("\033[1;31m" + text + "\033[0m")
+                    #print("\033[91m" + "CAUTION: Water needs a refill!" + "\033[0m")
             hx.power_down()
             hx.power_up()
             time.sleep(sleeptime)

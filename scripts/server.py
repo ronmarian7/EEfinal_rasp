@@ -16,12 +16,30 @@ def get_sensor_data():
     Currently the data that is generated is random
     :return: The data from the sensors in a string containing the format of commas
     """
-    area_temperature = random.randint(0, 100)
-    area_humidity = random.randint(0, 100)
-    dog_weight = random.randint(0, 100)
-    food_weight = random.randint(0, 100)
-    water_weight = random.randint(0, 100)
-    water_temperature = random.randint(0, 100)
+    limit = 0.9
+    if random.random() <= limit:
+        area_temperature = random.uniform(10, 40)
+    else:
+        area_temperature = random.uniform(40, 100)
+
+    if random.random() <= limit:
+        dog_weight = random.uniform(9, 11)
+    else:
+        dog_weight = random.uniform(11, 20)
+
+    if random.random() <= limit:
+        food_weight = random.uniform(3, 100)
+    else:
+        food_weight = random.uniform(0, 3)
+
+    if random.random() <= limit:
+        water_weight = random.uniform(0.5, 3)
+    else:
+        water_weight = random.uniform(0, 0.5)
+
+    water_temperature = random.uniform(0, 100)
+    area_humidity = random.uniform(0, 100)
+
     time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     print("Time - {}  area_temperature: {:.1f} C    area_humidity: {}%  dog_weight: {}KG    food_weight: {}gr\
        water_weight: {}ml    water_temperature: {}C".format(time, area_temperature, area_humidity, dog_weight,
@@ -30,7 +48,7 @@ def get_sensor_data():
     return data
 
 
-def socket_server(HOST, PORT=65432, x=5):
+def socket_server(HOST, PORT=65432, x=10):
     """
     Setting the server socket and waiting for a client to connect
     After connecting, sends the data every x seconds
@@ -59,7 +77,7 @@ if __name__ == '__main__':
     HOST = socket.gethostbyname(socket.gethostname())
     try:
         socket_server(HOST)
-    except ConnectionAbortedError:
+    except (ConnectionResetError, KeyboardInterrupt, ConnectionAbortedError):
         print("The connection was aborted by the client")
     except Exception as e:
         raise e

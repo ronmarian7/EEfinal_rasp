@@ -6,25 +6,14 @@ import queue
 import threading
 import tkinter as tk
 
-"""
-TODOs
-1. need to add an interface for the gui
-2. need to add an interface for the data processing  
-3. the socket_server and all the other data processing needs to be in different thread 
-"""
-
 
 class ClientSocket:
     def __init__(self, HOST: str, PORT: int = 65432):
-        # self.lock = lock
         self.HOST = HOST
         self.PORT = PORT
         self.data_queue = queue.Queue()
 
         self.time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-
-        self.num_samples = 0
-        self.avg_dog_weight = 0
 
         self.dog_weight = 0
         self.dog_house_temp = 0
@@ -33,7 +22,7 @@ class ClientSocket:
         self.water_weight = 0
         self.water_temp = 0
 
-        self.thread = threading.Thread(target=self.run_client)
+        self.thread = threading.Thread(target=self.run_client, daemon=True)
         self.thread.start()
 
     def load_data(self):
@@ -81,11 +70,11 @@ class ClientSocket:
             self.exceeding_requirements_printer("Food Weight")
 
     def print_data(self):
-        print("Time - {}  dog_house_temp: {:.1f} C    dog_house_humidity: {}%  dog_weight: {}KG    food_weight: {}gr\
-               water_weight: {}ml    water_temperature: {}C".format(self.time, self.dog_house_temp,
-                                                                    self.dog_house_humidity, self.dog_weight,
-                                                                    self.food_weight, self.water_weight,
-                                                                    self.water_temp))
+        print("Time - {}  dog_house_temp: {:.1f} C    dog_house_humidity: {:.2f}%  dog_weight: {:.2f}KG    food_weight: {:.2f}gr\
+               water_weight: {:.2f}ml    water_temperature: {:.2f}C".format(self.time, self.dog_house_temp,
+                                                                            self.dog_house_humidity, self.dog_weight,
+                                                                            self.food_weight, self.water_weight,
+                                                                            self.water_temp))
 
     def run_client(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -94,32 +83,30 @@ class ClientSocket:
                 s.connect((self.HOST, self.PORT))
                 print(f"connected to HOST: {self.HOST}, PORT: {self.PORT}")
                 while True:
-                    # Receive data from the socket connection
                     data = s.recv(1024).decode()
-                    # Check if there are 6 commas (and 7 elements) before splitting the string
                     if data:
-                        assert data.count(",") == 6, "Error: Data string does not have the expected number of elements."
-
-                        # process the data to variables
-                        splinted_data = data.split(',')
-                        self.time = splinted_data[0]
-                        self.dog_house_temp, self.dog_house_humidity, self.dog_weight, self.food_weight, \
-                            self.water_weight, self.water_temp = [int(i) for i in splinted_data[1:]]
-
-                        # self.print_data()
-                        self.check_data()
-                        self.calc_new_avg()
-
-                        self.data_queue.put(data)
-
-            except KeyboardInterrupt:
+                        if data.count(",") == 6:
+                            splinted_data = data.split(',')
+                            self.time = splinted_data[0]
+                            try:
+                                self.dog_house_temp, self.dog_house_humidity, self.dog_weight, self.food_weight, \
+                                self.water_weight, self.water_temp = [float(i) for i in splinted_data[1:]]
+                            except ValueError:
+                                print("Error: Data received is not in the expected format.")
+                                continue
+                            self.print_data()
+                            self.data_queue.put(data)
+                        else:
+                            print("Error: Data string does not have the expected number of elements.")
+            except (ConnectionResetError, KeyboardInterrupt):
                 print("Session ended by the user")
+            except (socket.error, socket.gaierror) as e:
+                print(f"Error: {e}")
             except Exception as e:
                 raise e
             finally:
-                self.dump_data()
+                s.close()
 
 
 if __name__ == "__main__":
     client = ClientSocket(HOST="10.100.102.5")
-    client.run_client()

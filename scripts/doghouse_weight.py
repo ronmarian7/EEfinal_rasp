@@ -2,53 +2,47 @@
 
 import time
 import sys
+import pyfiglet
+import RPi.GPIO as GPIO
+from hx711 import HX711
 
-EMULATE_HX711=False
-
-referenceUnit = 1
-
-if not EMULATE_HX711:
-    import RPi.GPIO as GPIO
-    from hx711 import HX711
-else:
-    from emulated_hx711 import HX711
+def config(dtpin = 27, sckpin=17):
+   
+    referenceUnit = 1
+    hx = HX711(dtpin, sckpin)
+    hx.set_reading_format("MSB", "MSB")
+    #hx.set_reference_unit(113)
+    hx.set_reference_unit(referenceUnit)
+    hx.reset()
+    hx.tare()
+    return hx
 
 def cleanAndExit():
-    print("Cleaning...")
-
-    if not EMULATE_HX711:
+        print("Cleaning...")
         GPIO.cleanup()
+        print("Bye!")
+        sys.exit()
+
+def get_water_weight(hx, dtpin = 5, sckpin=27, sleeptime = 0.5):
+
+    while True:
+        try:
+         dog_weight = max((hx.get_weight(27)/(-25), 0))
+         print(f"Dog's weight is:{int(dog_weight)}")
+
+         hx.power_down()
+         hx.power_up()
+         time.sleep(1)
+         return dog_weight   
         
-    print("Stop weighting....")
-    sys.exit()
-
-hx = HX711(27,17)
-
-hx.set_reading_format("MSB", "MSB")
-
-hx.set_reference_unit(referenceUnit)
-
-hx.reset()
-
-hx.tare()
-
-print("Lets weight our dog...")
-
-# to use both channels, you'll need to tare them both
-#hx.tare_A()
-#hx.tare_B()
-
-while True:
-    try:
+        except (KeyboardInterrupt, SystemExit):
+            cleanAndExit()
+        '''
+        else:
+            print("Cannot get data, try again")
+            continue 
+        '''
         
-        dog_weight = (hx.get_weight(27)/(-20.2))
-        print(f"Dog's weight is:{int(dog_weight)}")
-
-    
-
-        hx.power_down()
-        hx.power_up()
-        time.sleep(1)
-
-    except (KeyboardInterrupt, SystemExit):
-        cleanAndExit()
+if __name__ == "__main__":  
+    hx = config()   
+    get_water_weight(hx=hx)

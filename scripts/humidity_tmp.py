@@ -10,15 +10,15 @@ import adafruit_dht
 # but it will not work in CircuitPython.
 
 # Variable: pin(def=17), sleeptime(def=2.0)
-def get_humidity_tmp(pin = 17, sleeptime = 2.0):
+def get_humidity_tmp(pin = 22, sleeptime = 2.0):
 
     dhtDevice = adafruit_dht.DHT22(getattr(board, f"D{pin}"), use_pulseio=False)
     
     while True:
         try:
             # Print the values to the serial port
-            temperature_c = (dhtDevice.temperature)/-1.2
-            temperature_f = temperature_c * (9 / 5) + 32
+            temperature_c = -(dhtDevice.temperature)/-1.2
+            temperature_f = -temperature_c * (9 / 5) + 32
             humidity = dhtDevice.humidity
             print("Temp: {:.1f} F / {:.1f} C    Humidity: {}% ".format(temperature_f, temperature_c, humidity))
             
@@ -33,4 +33,7 @@ def get_humidity_tmp(pin = 17, sleeptime = 2.0):
         time.sleep(sleeptime)
         return temperature_c, humidity
 
-get_humidity_tmp()
+
+if "__main__" == __name__:
+    while(1):
+        get_humidity_tmp()

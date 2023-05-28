@@ -11,19 +11,21 @@ with open("../dnn_model/breed/class.json", "r") as f:
     breed_names = json.load(f)
 pose_names = {0: 'Lying', 1: 'Sitting', 2: 'Standing'}
 
-video_path = "../videos/dog_sitting_with_kid.mov"
+video_path = "../videos/dell vid/dell5.mp4"
 cap = cv2.VideoCapture(video_path)
 WindowName = "Webcam"
 color = (255, 0, 0)
 font = cv2.FONT_HERSHEY_COMPLEX
 FONT_SCALE = 1e-3  # Adjust for larger font size in all images
 THICKNESS_SCALE = 1e-3  # Adjust for larger thickness in all images
-roi_sapce = 50
-
+roi_sapce = 100
+conf = 0.60
 
 cv2.namedWindow(WindowName, cv2.WINDOW_NORMAL)
-cv2.resizeWindow(WindowName, 1280, 720)
-# These two lines will force your "Main View" window to be on top with focus.
+# cv2.resizeWindow(WindowName, 1280, 720)
+# cv2.resizeWindow(WindowName, 848, 480)
+
+# These two lines will force "Main View" window to be on top with focus.
 cv2.setWindowProperty(WindowName,cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
 cv2.setWindowProperty(WindowName,cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_NORMAL)
 
@@ -35,7 +37,7 @@ try:
 
         if success:
             # Run YOLOv8 inference on the frame
-            breed_results = breed_model.predict(frame, conf=0.65) #  conf=0.7
+            breed_results = breed_model.predict(frame, conf=conf) #  conf=0.7
             height, width, _ = frame.shape
             font_scale = min(width, height) * FONT_SCALE
             thickness = math.ceil(min(width, height) * THICKNESS_SCALE)
@@ -52,7 +54,7 @@ try:
                 cv2.putText(frame, f"Breed: {breed_name} - {breed_score:.3f}", (int(box[0]), int(box[1] - 35)),
                     font, font_scale, color, thickness)
                 roi = frame[y - roi_sapce:h + roi_sapce, x - roi_sapce:w + roi_sapce]
-                pose_results = pose_model.predict(roi, conf=0.65)
+                pose_results = pose_model.predict(roi, conf=conf)
                 pose_probs = pose_results[0].probs.cpu()
                 pose_score = pose_probs.max().item()
                 pose_class_id = np.argmax(pose_probs).item()

@@ -6,8 +6,8 @@ import pyfiglet
 import RPi.GPIO as GPIO
 from hx711 import HX711
 
-def config(dtpin = 27, sckpin=17):
-   
+def config_doghouse_weight(dtpin = 27, sckpin=17):
+    print("Starting to config the doghouse_weight") 
     referenceUnit = 1
     hx = HX711(dtpin, sckpin)
     hx.set_reading_format("MSB", "MSB")
@@ -15,6 +15,8 @@ def config(dtpin = 27, sckpin=17):
     hx.set_reference_unit(referenceUnit)
     hx.reset()
     hx.tare()
+    print("Done to config the doghouse_weight") 
+
     return hx
 
 def cleanAndExit():
@@ -23,7 +25,7 @@ def cleanAndExit():
         print("Bye!")
         sys.exit()
 
-def get_water_weight(hx, dtpin = 5, sckpin=27, sleeptime = 0.5):
+def get_doghouse_weight(hx, dtpin = 5, sckpin=27, sleeptime = 0.5):
 
     while True:
         try:
@@ -44,5 +46,6 @@ def get_water_weight(hx, dtpin = 5, sckpin=27, sleeptime = 0.5):
         '''
         
 if __name__ == "__main__":  
-    hx = config()   
-    get_water_weight(hx=hx)
+    hx = config_doghouse_weight()   
+    while True :
+        get_doghouse_weight(hx=hx)

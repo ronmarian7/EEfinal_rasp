@@ -6,8 +6,8 @@ import pyfiglet
 import RPi.GPIO as GPIO
 from hx711 import HX711
 
-def config(dtpin = 5, sckpin=6):
-   
+def config_water_weight(dtpin = 5, sckpin=6):
+    print("Starting to config the water weight") 
     referenceUnit = 1
     hx = HX711(dtpin, sckpin)
     hx.set_reading_format("MSB", "MSB")
@@ -15,6 +15,7 @@ def config(dtpin = 5, sckpin=6):
     hx.set_reference_unit(referenceUnit)
     hx.reset()
     hx.tare()
+    print("Finishing to config the water weight") 
     return hx
 
 def cleanAndExit():
@@ -44,6 +45,6 @@ def get_water_weight(hx, dtpin = 5, sleeptime = 0.5):
         '''
         
 if __name__ == "__main__":  
+    hx = config_water_weight()   
     while(1):
-        hx = config()   
         get_water_weight(hx=hx)

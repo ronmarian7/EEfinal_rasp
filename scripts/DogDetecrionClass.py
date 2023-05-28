@@ -11,8 +11,8 @@ class ObjectDetection:
                  breed_model_path="../dnn_model/breed/dog_breed_model.h5",
                  pose_model_path="../dnn_model/pose/pose_model.h5"):
         print("Loading Object Detection")
-        self.nmsThreshold = 0.4
-        self.confThreshold = 0.5
+        self.nmsThreshold = 0.6
+        self.confThreshold = 0.6
         self.image_size = (320, 320)
 
         self.breed_image_size = (299, 299)

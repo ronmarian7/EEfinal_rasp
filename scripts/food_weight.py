@@ -47,8 +47,8 @@ def config_feeder(dtpin1 = 19, sckpin1 = 13, dtpin2 = 23, sckpin2 = 24, scale=1,
     
     print("PUT FOOD IN ME!")
     for i in range(x):
-        print(f"sensor A: {hx1.get_weight(dtpin1)}")
-        print(f"sensor B: {hx2.get_weight(dtpin2)}")
+        # print(f"sensor A: {hx1.get_weight(dtpin1)}")
+        # print(f"sensor B: {hx2.get_weight(dtpin2)}")
         food_weight1 = max(0,(hx1.get_weight(dtpin1))/scale)
         food_weight2 = max(0,(hx2.get_weight(dtpin2))/scale)
         total_food_weight=int(food_weight1+food_weight2)
@@ -69,8 +69,8 @@ def handle_feeder(hx1, hx2, dtpin1 = 19, sckpin1 = 13, dtpin2 = 23, sckpin2 = 24
     total_food_weight = None                                                                                           
     while not total_food_weight:
         try:
-            print(f"sensor A: {hx1.get_weight(dtpin1)}")
-            print(f"sensor B: {hx2.get_weight(dtpin2)}")
+            # print(f"sensor A: {hx1.get_weight(dtpin1)}")
+            # print(f"sensor B: {hx2.get_weight(dtpin2)}")
             food_weight1 = max(0,(hx1.get_weight(dtpin1))/scale)
             food_weight2 = max(0,(hx2.get_weight(dtpin2))/scale)
             total_food_weight=int(food_weight1+food_weight2)

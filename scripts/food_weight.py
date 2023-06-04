@@ -29,7 +29,8 @@ def cleanAndExit():
         print("Scaling stopped")
         sys.exit()
 
-def config_feeder(dtpin1 = 19, sckpin1 = 13, dtpin2 = 23, sckpin2 = 24, scale=470, sleeptime = 0.1, x=4):
+
+def config_feeder(dtpin1 = 19, sckpin1 = 13, dtpin2 = 23, sckpin2 = 24, scale=1, sleeptime = 0.1, x=4):
     print("Start Config feeder")
     referenceUnit = 1 
     hx1 = HX711(dtpin1,sckpin1)
@@ -46,9 +47,13 @@ def config_feeder(dtpin1 = 19, sckpin1 = 13, dtpin2 = 23, sckpin2 = 24, scale=47
     
     print("PUT FOOD IN ME!")
     for i in range(x):
+        print(f"sensor A: {hx1.get_weight(dtpin1)}")
+        print(f"sensor B: {hx2.get_weight(dtpin2)}")
         food_weight1 = max(0,(hx1.get_weight(dtpin1))/scale)
         food_weight2 = max(0,(hx2.get_weight(dtpin2))/scale)
         total_food_weight=int(food_weight1+food_weight2)
+
+
         print(f"Config food's weight is: {total_food_weight} gr.")
 
         hx1.power_down()
@@ -60,25 +65,28 @@ def config_feeder(dtpin1 = 19, sckpin1 = 13, dtpin2 = 23, sckpin2 = 24, scale=47
     print("Done Config feeder")
     return hx1, hx2, total_food_weight
 
-def handle_feeder(hx1, hx2, dtpin1 = 19, sckpin1 = 13, dtpin2 = 23, sckpin2 = 24, sleeptime = 0.1, feedingthreshold = 100,cur_ref_weight= 500, portions = 4, feedersleeptime = 4, feederpin = 26, scale=470):
+def handle_feeder(hx1, hx2, dtpin1 = 19, sckpin1 = 13, dtpin2 = 23, sckpin2 = 24, sleeptime = 0.1, feedingthreshold = 100,cur_ref_weight= 500, portions = 4, feedersleeptime = 4, feederpin = 26, scale=270):
     total_food_weight = None                                                                                           
     while not total_food_weight:
         try:
+            print(f"sensor A: {hx1.get_weight(dtpin1)}")
+            print(f"sensor B: {hx2.get_weight(dtpin2)}")
             food_weight1 = max(0,(hx1.get_weight(dtpin1))/scale)
             food_weight2 = max(0,(hx2.get_weight(dtpin2))/scale)
             total_food_weight=int(food_weight1+food_weight2)
+
             print(f"Food's weight is: {total_food_weight} gr.")
-            if total_food_weight < (cur_ref_weight-feedingthreshold):
-                seconds = portions*feedersleeptime
-                print(f"Feeding dog, will take {seconds} seconds")
-                timer_thread = threading.Thread(target=countdown, args=(seconds,))
-                timer_thread.start()
-                feeder.feed(portions,feederpin)
-                timer_thread.join()
-                food_weight1 = max(0,(hx1.get_weight(dtpin1))/scale)
-                food_weight2 = max(0,(hx2.get_weight(dtpin2))/scale)
-                cur_ref_weight=int(food_weight1+food_weight2)
-                print(f"New Food's weight after feeder is: {cur_ref_weight} gr.")
+            # if total_food_weight < (cur_ref_weight-feedingthreshold):
+            #     seconds = portions*feedersleeptime
+            #     print(f"Feeding dog, will take {seconds} seconds")
+            #     timer_thread = threading.Thread(target=countdown, args=(seconds,))
+            #     timer_thread.start()
+            #     feeder.feed(portions,feederpin)
+            #     timer_thread.join()
+            #     food_weight1 = max(0,(hx1.get_weight(dtpin1))/scale)
+            #     food_weight2 = max(0,(hx2.get_weight(dtpin2))/scale)
+            #     cur_ref_weight=int(food_weight1+food_weight2)
+            #     print(f"New Food's weight after feeder is: {cur_ref_weight} gr.")
 
             hx1.power_down()
             hx1.power_up()
@@ -93,6 +101,6 @@ def handle_feeder(hx1, hx2, dtpin1 = 19, sckpin1 = 13, dtpin2 = 23, sckpin2 = 24
 
 
 if __name__ == "__main__":  
-    hx1, hx2, config_weight = config_feeder(x=10) 
+    hx1, hx2, config_weight = config_feeder(x=1) 
     while True:  
         weight, config_weight = handle_feeder(hx1, hx2, cur_ref_weight=config_weight, portions=10, feedingthreshold=50)

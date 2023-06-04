@@ -11,8 +11,8 @@ class ObjectDetection:
                  breed_model_path="../dnn_model/breed/dog_breed_model.h5",
                  pose_model_path="../dnn_model/pose/pose_model.h5"):
         print("Loading Object Detection")
-        self.nmsThreshold = 0.4
-        self.confThreshold = 0.5
+        self.nmsThreshold = 0.6
+        self.confThreshold = 0.6
         self.image_size = (320, 320)
 
         self.breed_image_size = (299, 299)
@@ -76,6 +76,34 @@ class ObjectDetection:
 
     def detect(self, frame):
         return self.model.detect(frame, nmsThreshold=self.nmsThreshold, confThreshold=self.confThreshold)
+
+
+class PoseDetection:
+    def __init__(self, pose_model_path="../dnn_model/pose/pose_model.h5"):
+
+        self.pose_image_size = (224, 224)
+
+        self.pose_classes = {}
+
+        self.load_pose_class()
+
+        # Load Network
+        print("Loading Dog pose recognition net (tf)")
+        self.pose_model = load_model(pose_model_path)
+
+    def load_pose_class(self, classes_path="../dnn_model/pose/class.json"):
+        with open(classes_path, "r") as f:
+            self.pose_classes = json.load(f)
+        return self.pose_classes
+
+    def pose_detect(self, frame):
+        resized = cv2.resize(frame, self.pose_image_size, interpolation=cv2.INTER_AREA)
+        img = np.array(resized)
+        img = img / 255.0
+        # Object Detection
+        pose_prediction = self.pose_model.predict(img[None, :, :])
+        pose_prediction_label = [key for key, value in self.pose_classes.items() if value == pose_prediction.argmax()]
+        return pose_prediction_label[0], pose_prediction.max() * 100
 
 
 class TfliteObjectDetection:

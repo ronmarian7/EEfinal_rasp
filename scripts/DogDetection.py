@@ -1,5 +1,7 @@
 import cv2
 from DogDetecrionClass import ObjectDetection, TfliteObjectDetection
+import math
+
 
 
 def image_processing():
@@ -7,16 +9,23 @@ def image_processing():
 
     # Initialize a new cv2.VideoCapture object to capture video from the first camera
     # cap = cv2.VideoCapture(2)
-    cap = cv2.VideoCapture("/home/ira-demo/Videos/sitting_dog_vid.mp4")
-
-    # Get the size of the video
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    cap = cv2.VideoCapture("../videos/dell vid/dell1.mp4")
+    WindowName = "Webcam"
+    color = (255, 0, 0)
+    font = cv2.FONT_HERSHEY_COMPLEX
+    FONT_SCALE = 1e-3  # Adjust for larger font size in all images
+    THICKNESS_SCALE = 1e-3  # Adjust for larger thickness in all images
+    conf = 0.65
     # print("Video size:", width, "x", height)
 
     # Create a named window with the desired size
-    cv2.namedWindow("Webcam", cv2.WINDOW_NORMAL)
-    cv2.resizeWindow("Webcam", width // 2, height // 2)
+    cv2.namedWindow(WindowName, cv2.WINDOW_NORMAL)
+    # cv2.resizeWindow("Webcam", width // 2, height // 2)
+
+    # These two lines will force "Main View" window to be on top with focus.
+    cv2.setWindowProperty(WindowName, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+    cv2.setWindowProperty(WindowName, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_NORMAL)
+
     wanted_classes = [16]  # 0  for person, 16 for dog
 
     # Loop indefinitely to display video frames
@@ -25,12 +34,14 @@ def image_processing():
         ret, frame = cap.read()
         if not ret:
             break
-
+        height, width, _ = frame.shape
+        font_scale = min(width, height) * FONT_SCALE
+        thickness = math.ceil(min(width, height) * THICKNESS_SCALE)
         # Object Detection
         (class_ids, scores, boxes) = ob.model.detect(frame)
         for classId, score, box in zip(class_ids, scores, boxes):
-            if classId in wanted_classes:
-                space = 50
+            if (classId in wanted_classes) and (score > conf):
+                space = 100
                 (x, y, w, h) = box
                 roi = frame[y - space:y + h + space, x - space:x + w + space]
                 class_name = ob.classes[classId]
@@ -39,14 +50,14 @@ def image_processing():
 
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 cv2.putText(frame, f"Breed: {breed_label} - {breed_label_score:.3f}", (box[0] + 0, box[1] - 30),
-                            cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
+                            font, font_scale, color, thickness)
                 cv2.putText(frame, f"Pose: {pose_label} - {pose_label_score:.3f}", (box[0] + 0, box[1] - 5),
-                            cv2.FONT_HERSHEY_COMPLEX, 1, (0, 255, 0), 2)
+                            font, font_scale, color, thickness)
         # Display the current frame
         cv2.imshow("Webcam", frame)
 
         # Break the loop if the 'q' key is pressed
-        key = cv2.waitKey(1)
+        key = cv2.waitKey(0)
         if key == ord('q'):
             break
 
@@ -83,7 +94,7 @@ def image_processing_tfl():
         (class_ids, scores, boxes) = ob.model.detect(frame)
         for classId, score, box in zip(class_ids, scores, boxes):
             if classId in wanted_classes:
-                space = 50
+                space = 100
                 (x, y, w, h) = box
                 roi = frame[y - space:y + h + space, x - space:x + w + space]
                 class_name = ob.classes[classId]

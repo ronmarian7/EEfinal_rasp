@@ -9,7 +9,7 @@ from gtts import gTTS
 from pygame import mixer
 import time
 import threading
-
+from PinConfig import HOST_IP, HOST_PORT
 
 class DogHouseApp:
     def __init__(self, client_socket: ClientSocket):
@@ -324,7 +324,7 @@ class DogHouseApp:
 
 
 if __name__ == "__main__":
-    client = ClientSocket("10.100.102.5")
+    client = ClientSocket(HOST=HOST_IP, PORT=HOST_PORT)
     app = DogHouseApp(client)
     try:
         app.run()

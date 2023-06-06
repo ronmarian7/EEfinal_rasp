@@ -25,7 +25,7 @@ def cleanAndExit():
         sys.exit()
 
 def get_water_weight(hx, dtpin = 5, sleeptime = 0.5):
-    print("Checking water's weight...")
+    # print("Checking water's weight...")
 
     while True:
         try:

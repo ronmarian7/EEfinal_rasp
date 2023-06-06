@@ -5,6 +5,7 @@ from datetime import datetime
 import queue
 import threading
 import tkinter as tk
+import PinConfig
 
 
 class ClientSocket:
@@ -41,19 +42,18 @@ class ClientSocket:
         if self.dog_weight > 2:  # threshold for the dog weight
             self.avg_dog_weight = ((self.avg_dog_weight * self.num_samples) + self.dog_weight) / (self.num_samples + 1)
             self.num_samples += 1
-    
 
     def exceeding_requirements_printer(req_exceeded: str):
         root = tk.Tk()
         root.title("Alert")
         root.geometry("250x100")
-    
+
         msg = tk.Label(root, text=f"{req_exceeded} Exceeded the requirements")
         msg.pack(pady=20)
         # TODO: make some sound alert also!
         ok_button = tk.Button(root, text="OK", command=root.destroy)
         ok_button.pack(pady=10)
-    
+
         root.mainloop()
 
     def check_data(self):
@@ -109,4 +109,4 @@ class ClientSocket:
 
 
 if __name__ == "__main__":
-    client = ClientSocket(HOST="10.100.102.5")
+    client = ClientSocket(HOST=PinConfig.HOST_IP, PORT=PinConfig.HOST_PORT)

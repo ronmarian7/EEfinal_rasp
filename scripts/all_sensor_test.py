@@ -6,6 +6,7 @@ from food_weight import *
 from humidity_tmp import *
 from water_temp import *
 from water_weight import *
+from time import sleep 
 
 if __name__ == '__main__':
     doghouse_weight_m = config_doghouse_weight(dtpin=DOGHOUSE_WEIGHT_DTPIN, sckpin=DOGHOUSE_WEIGHT_SCKPIN,
@@ -27,3 +28,4 @@ if __name__ == '__main__':
                                                    feedingthreshold=FEEDER_THRESHOLD, feederpin=FEEDER_PIN)
         water_weight = get_water_weight(water_weight_m)
         print("---------------------------------------------")
+        sleep(1)

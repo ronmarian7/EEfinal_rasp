@@ -5,7 +5,7 @@ GPIO.setmode(GPIO.BCM)
 
 
 # receives two variables, portion (default 1), and pin (default 13) - represents the GPIO pin number
-def feed(portion=1, pin=13, sleeptime=4):
+def feed(portion=1, pin=26, sleeptime=4):
     GPIO.setup(pin, GPIO.OUT)
     for i in range(portion):
         GPIO.output(pin, GPIO.LOW)
@@ -15,4 +15,4 @@ def feed(portion=1, pin=13, sleeptime=4):
 
 
 if __name__ == '__main__':
-    feed(4)
+    feed(100, 26, 7)

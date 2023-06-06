@@ -27,15 +27,13 @@ def cleanAndExit():
     print("Bye!")
     sys.exit()
 
-def get_water_weight(hx, dtpin = 5, sleeptime = 0.5):
-    # print("Checking water's weight...")
 
-def get_water_weight(hx, sleeptime=0.5):
-    print("Checking water's weight...")
+def get_water_weight(hx, sleeptime=0.5, const_vas=0):
+    # print("Checking water's weight...")
     water_weight = None
-    while not water_weight:
+    while water_weight == None:
         try:
-            water_weight = max(0, int(hx.get_weight()))
+            water_weight = max(0, int(hx.get_weight()) - const_vas) 
             print(f"Water's weight is: {water_weight} ml")
             hx.power_down()
             hx.power_up()
@@ -48,6 +46,9 @@ def get_water_weight(hx, sleeptime=0.5):
 
 
 if __name__ == "__main__":
-    hx = config_water_weight()
+    from PinConfig import *
+    hx = config_water_weight(dtpin=WATER_WEIGHT_DTPIN, sckpin=WATER_WEIGHT_SCKPIN,
+                                         referenceUnit=WATER_WEIGHT_REFERENCE_UNIT)
     while True:
         get_water_weight(hx=hx)
+        time.sleep(1)

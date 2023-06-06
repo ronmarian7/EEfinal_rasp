@@ -46,6 +46,10 @@ def get_doghouse_weight(hx, sleeptime=0.5) -> int:
 
 
 if __name__ == "__main__":
-    hx = config_doghouse_weight()
+    from PinConfig import *
+
+    doghouse_weight_m = config_doghouse_weight(dtpin=DOGHOUSE_WEIGHT_DTPIN, sckpin=DOGHOUSE_WEIGHT_SCKPIN,
+                                               referenceUnit=DOGHOUSE_REFERENCE_UNIT)
     while True:
-        get_doghouse_weight(hx=hx)
+        doghouse_weight = get_doghouse_weight(doghouse_weight_m)
+        time.sleep(1)

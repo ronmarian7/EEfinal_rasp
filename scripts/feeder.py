@@ -15,4 +15,4 @@ def feed(portion=1, pin=26, sleeptime=4):
 
 
 if __name__ == '__main__':
-    feed(100, 26, 7)
+    feed(10, 26, 7)

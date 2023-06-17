@@ -12,11 +12,13 @@ with open("../dnn_model/breed/class.json", "r") as f:
     breed_names = json.load(f)
 pose_names = {0: 'Lying', 1: 'Sitting', 2: 'Standing'}
 
-video_path = "../videos/dell vid/dell1.mp4"  # false rec standing, but after is correct, Good breed detection
+# video_path = "../videos/dell vid/dell1.mp4"  # false rec standing, but after is correct, Good breed detection
 # video_path = "../videos/dell vid/dell2.mp4"  # Bad video, not to use
 # video_path = "../videos/dell vid/dell3.mp4"  # Bad video, not to use
 # video_path = "../videos/dell vid/dell4.mp4"  # Not detecting well
 # video_path = "../videos/dell vid/dell5.mp4"  # Bad breed detection, Good pose detection
+# video_path = "../videos/white_dog.mp4"
+video_path = "../videos/beber.mp4"
 
 cap = cv2.VideoCapture(video_path)
 WindowName = "Webcam"
@@ -59,7 +61,7 @@ try:
                 cv2.rectangle(frame, (x, y), (w, h), color, 2)
                 cv2.putText(frame, f"Breed: {breed_name} - {breed_score:.3f}", (int(box[0]), int(box[1] - 35)),
                             font, font_scale, color, thickness)
-                roi = frame[y - roi_space:h + roi_space, x - roi_space:w + roi_space]
+                roi = frame[max(0, y - roi_space):min(height, h + roi_space), max(0, x - roi_space):min(width, w + roi_space)]
                 pose_label, pose_label_score = ob.pose_detect(roi)
                 # Add the text to the image
                 cv2.putText(frame, f'Pose: {pose_label} - {pose_label_score:.3f}', (int(box[0]), int(box[1] - 5)), font,

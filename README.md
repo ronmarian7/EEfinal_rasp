@@ -18,8 +18,6 @@
 
 The project can be found at the following URL: [https://github.com/ronmarian7/EEfinal_rasp](https://github.com/ronmarian7/EEfinal_rasp)
 
-![General Screenshot](/mnt/c/Users/ronma/Pictures/Screenshots/Screenshot\ 2023-05-18\ 165224.png)
-
 ## Summary 
 
 This README provides an overview of our final EE project at TAU. Our application efficiently identifies different dog breeds and classifies their poses using machine learning models. The technologies we utilized include Python, TensorFlow, OpenCV for image processing, and Tkinter for the graphical user interface.
